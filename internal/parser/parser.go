@@ -13,8 +13,10 @@ import (
 
 // Structure definition
 type Object struct {
-	Name string	`json: "name"`
-	Model string `json: "data"`
+	Name 	string	`json: "name"`
+	Model 	string 	`json: "model"`
+	Lambda 	int		`json: "lambda"`
+	X		int 	`json: "X"`
 }
 
 type Event struct {
@@ -44,7 +46,7 @@ func (p *Parser) ReadJSON(url string) {
 }
 
 // Provide function usage - load from file and read yaml
-func (p *Parser) readYAML(url string) {
+func (p *Parser) ReadYAML(url string) {
 	// read file into string
 	data, err := ioutil.ReadFile(url)
 	if err != nil {
