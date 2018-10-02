@@ -6,6 +6,7 @@ import (
 	"strings"
 	"../internal/parser"
 	"../internal/logger"
+	"../internal/event/engine"
 )
 
 func main(){
@@ -42,5 +43,5 @@ func main(){
 	}
 
 	// get something useful from source file
-	
+	fmt.Println("Poisson: ",engine.Debug_poisson())
 }
