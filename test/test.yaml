@@ -1,0 +1,9 @@
+event: 
+  - name:   food_gen
+    model:  poisson
+    lambda: 2
+    x:      4
+  - name:   disaster
+    model:  exponential
+    lambda: 2
+    x:      4
