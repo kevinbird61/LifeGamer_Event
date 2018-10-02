@@ -5,6 +5,7 @@ import (
 	"flag"
 	"strings"
 	"../internal/parser"
+	"../internal/logger"
 )
 
 func main(){
@@ -18,6 +19,12 @@ func main(){
 
 	// create parser
 	p := parser.Parser{}
+	// create logger & initial 
+	lg := logger.LG_Logger{}
+	lg.Init()
+
+	// Test 
+	lg.Info.Println("Welcome to use LifeGamer event engine!")
 
 	// switch case - base on file type
 	switch t := strings.ToUpper(*itype); t {
@@ -35,4 +42,5 @@ func main(){
 	}
 
 	// get something useful from source file
+	
 }
