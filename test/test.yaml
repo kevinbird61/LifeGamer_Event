@@ -1,0 +1,4 @@
+event: 
+  - name: food_gen
+    model: poisson
+  
