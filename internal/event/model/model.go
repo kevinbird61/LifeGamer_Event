@@ -36,6 +36,13 @@ func Rand_gen_float() float64 {
 	return rand.Float64()
 }
 
+// interface 
+type Model interface {
+	Init()
+	Get()
+	Rand()
+}
+
 // ==================================== Poisson ====================================
 type Poisson struct {
 	Lambda 	float64
@@ -85,4 +92,21 @@ func (e *Expon) Rand_Var(t float64) float64 {
 		return math.Exp(-e.Lambda*float64(0.0001))
 	}
 	return math.Exp(-e.Lambda*t)
+}
+
+// ==================================== Uniform ====================================
+type Uniform struct {
+	Boundary float64
+}
+
+func (u *Uniform) Init(lower, upper float64) {
+	if upper >= lower {
+		u.Boundary = upper - lower 
+	} else {
+		u.Boundary = lower - upper
+	}
+}
+
+func (u *Uniform) Rand() float64 {
+	return float64(1)/u.Boundary
 }

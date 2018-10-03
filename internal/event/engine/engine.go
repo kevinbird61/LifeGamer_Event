@@ -51,18 +51,21 @@ func (e *Engine) Schedule(event_obj data.Event) {
 	// check its model, and time 
 	var new_event data.Event 
 	new_event = event_obj
-	// new_event.Event_model = event_obj
-	// new_event.Event_type = event_obj.Name
+	// create random distribution model
 	exp := model.Expon{}
 	exp.Init(float64(event_obj.Event_model.Lambda))
 	poi := model.Poisson{}
 	poi.Init(float64(event_obj.Event_model.Lambda))
+	uni := model.Uniform{}
+	uni.Init(float64(event_obj.Event_model.Lambda), float64(event_obj.Event_model.X)) // usign Lambda as lower, X as upper
 
 	switch t := strings.ToUpper(event_obj.Event_model.Model); t {
 		case "POISSON":
 			new_event.Event_ts = event_obj.Event_ts + poi.Rand() // interval is exponential
 		case "EXPONENTIAL":
 			new_event.Event_ts = event_obj.Event_ts + exp.Rand() //exp.Rand_Var(event_obj.Event_ts)
+		case "UNIFORM": 
+			new_event.Event_ts = event_obj.Event_ts + uni.Rand()
 		default:
 			// error , need to return with an error code
 			// But in here, we just assign an random float number

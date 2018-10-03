@@ -52,14 +52,10 @@ func main(){
 	// start simulation process
 	engine.Start()
 
-	// fmt.Println(engine.History)
-
 	// assign history event list into engine
 	history := history.History{}
 	history.Init(0, *doom, engine.History)
 
+	// Print out total event summation 
 	fmt.Println(history.Map)
-
-	// fmt.Println("Poisson: ",engine.Debug_poisson())
-	// fmt.Println("Exponential: ",engine.Debug_expon())
 }

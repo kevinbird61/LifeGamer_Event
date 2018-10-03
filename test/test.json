@@ -18,6 +18,12 @@
         "x": 5
     }, 
     {
+        "name": "checkpoint",
+        "model": "uniform",
+        "lambda": 0,
+        "x": 10
+    },
+    {
         "name": "riot",
         "model": "none",
         "lambda": 0,
