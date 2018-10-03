@@ -2,13 +2,37 @@
     { 
         "name": "food_gen", 
         "model": "poisson", 
-        "lambda": 2, 
-        "x": 4 
+        "lambda": 1, 
+        "x": 5
     }, 
+    { 
+        "name": "supplyment", 
+        "model": "poisson", 
+        "lambda": 2, 
+        "x": 5
+    },
+    { 
+        "name": "disease", 
+        "model": "poisson", 
+        "lambda": 1, 
+        "x": 5
+    }, 
+    {
+        "name": "riot",
+        "model": "none",
+        "lambda": 0,
+        "x": 0
+    },
+    {
+        "name": "thrift", 
+        "model": "exponential", 
+        "lambda": 1, 
+        "x": 4
+    },
     {
         "name": "disaster", 
         "model": "exponential", 
-        "lambda": 2, 
+        "lambda": 1, 
         "x": 4
     }
 ]

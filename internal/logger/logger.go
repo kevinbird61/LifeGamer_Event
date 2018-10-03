@@ -19,9 +19,9 @@ type LG_Logger struct {
 
 // Initial
 func (lg *LG_Logger) Init(){
-	lg.errURL = "/tmp/lg.e.errors.log"
-	lg.infoURL= "/tmp/lg.e.info.log"
-	lg.warnURL= "/tmp/lg.e.warn.log"
+	lg.errURL = os.TempDir() + "/lg.e.errors.log"
+	lg.infoURL= os.TempDir() + "/lg.e.info.log"
+	lg.warnURL= os.TempDir() +"/lg.e.warn.log"
 
 	errFile, err := os.OpenFile(lg.errURL, os.O_CREATE | os.O_WRONLY | os.O_APPEND, 0666)
 	if err != nil {

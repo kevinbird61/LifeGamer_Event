@@ -6,6 +6,7 @@ import (
 	"strings"
 	"../internal/parser"
 	"../internal/logger"
+	"../internal/history"
 	"../internal/event/engine"
 )
 
@@ -14,6 +15,7 @@ func main(){
 	itype := flag.String("itype", "json", "Specify type of input file.")
 	ifile := flag.String("ifile", "test.json", "Specify filename of input file.")
 	debug := flag.Bool("debug", false, "Debug flag, default is false.")
+	doom := flag.Float64("doom", 0, "Doom of this simulation.")
 
 	// argparse parsing 
 	flag.Parse()
@@ -43,5 +45,21 @@ func main(){
 	}
 
 	// get something useful from source file
-	fmt.Println("Poisson: ",engine.Debug_poisson())
+	// create engine & initialize it
+	engine := engine.Engine{}
+	engine.Init(0, *doom, p.Obj)
+
+	// start simulation process
+	engine.Start()
+
+	// fmt.Println(engine.History)
+
+	// assign history event list into engine
+	history := history.History{}
+	history.Init(0, *doom, engine.History)
+
+	fmt.Println(history.Map)
+
+	// fmt.Println("Poisson: ",engine.Debug_poisson())
+	// fmt.Println("Exponential: ",engine.Debug_expon())
 }

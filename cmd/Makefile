@@ -1,2 +1,6 @@
 all: main.go
-	go run main.go -itype json -ifile ../test/test.json -debug
+	go run main.go \
+		-itype json \
+		-ifile ../test/test.json \
+		-doom 10 \
+		-debug
