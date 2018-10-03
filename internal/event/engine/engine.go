@@ -17,8 +17,6 @@ type Engine struct {
 	Doom		float64 	// Event Scheduler will end when "Timeline" reach the "Doom"
 }
 
-type SortEvent []data.Event 
-
 // ========================================= Engine =========================================
 func (e *Engine) Init(timeline, doom float64, event []data.Object) {
 	e.Timeline = timeline
@@ -46,30 +44,6 @@ func (e *Engine) Pop_front() data.Event {
 func (e *Engine) Push_back(event data.Event) {
 	// push into last of queue
 	e.Queue = append(e.Queue, event)
-}
-
-/*
-	sorting, need 3 interface  
-	- Len
-	- Swap
-	- Less
-
-	and call:
-	- Sort_by_ts()
-*/
-func (q SortEvent) Len() int {
-	return len(q)
-}
-
-func (q SortEvent) Swap(i, j int) {
-	q[i], q[j] = q[j], q[i]
-}
-
-func (q SortEvent) Less(i, j int) bool {
-	if q[i].Event_ts <= q[j].Event_ts {
-		return true
-	}
-	return false 
 }
 
 // schedule event obj 
@@ -120,7 +94,7 @@ func (e *Engine) Start() {
 		e.History = append(e.History, first_event)
 
 		// Sort the event queue by timestamp (make sure the smallest one came first)
-		sort.Sort(SortEvent(e.Queue))
+		sort.Sort(data.SortEvent(e.Queue))
 	}
 }
 
