@@ -50,6 +50,12 @@ func (p *Poisson) Get(k float64) float64{
 	return (math.Exp(-p.Lambda) * math.Pow(p.Lambda, k)) / factorial(k)
 }
 
+func (p *Poisson) Rand() float64 {
+	var k float64
+	k = Rand_gen_float()
+	return (math.Exp(-p.Lambda) * math.Pow(p.Lambda, k)) / factorial(k)
+}
+
 // ==================================== Exponential ====================================
 type Expon struct {
 	Lambda	float64

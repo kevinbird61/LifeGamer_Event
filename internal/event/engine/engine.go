@@ -9,22 +9,15 @@ import (
 	"../model"
 )
 
-// event queue
-type Event struct {
-	Event_model data.Object // model of event
-	Event_type 	string		// type of event: e.g. food_gen, disaster
-	Event_ts	float64		// timestamp of event
-}
-
 // Class: Engine
 type Engine struct {
-	Queue		[]Event 
-	History		[]Event 
+	Queue		[]data.Event 
+	History		[]data.Event 
 	Timeline	float64
 	Doom		float64 	// Event Scheduler will end when "Timeline" reach the "Doom"
 }
 
-type SortEvent []Event 
+type SortEvent []data.Event 
 
 // ========================================= Engine =========================================
 func (e *Engine) Init(timeline, doom float64, event []data.Object) {
@@ -34,15 +27,15 @@ func (e *Engine) Init(timeline, doom float64, event []data.Object) {
 	// init all event into queue
 	for _,obj := range event {
 		// init new event
-		var event Event
+		var event data.Event
 		event.Event_model = obj 
 		event.Event_type = obj.Name 
-		event.Event_ts = 0
+		event.Event_ts = 0 // (doom - timeline) / doom*100
 		e.Schedule(event)
 	}
 }
 
-func (e *Engine) Pop_front() Event {
+func (e *Engine) Pop_front() data.Event {
 	// Get the first event 
 	event := e.Queue[0]
 	// Eliminate the first event (e.g. pop)
@@ -50,7 +43,7 @@ func (e *Engine) Pop_front() Event {
 	return event 
 }
 
-func (e *Engine) Push_back(event Event) {
+func (e *Engine) Push_back(event data.Event) {
 	// push into last of queue
 	e.Queue = append(e.Queue, event)
 }
@@ -80,24 +73,26 @@ func (q SortEvent) Less(i, j int) bool {
 }
 
 // schedule event obj 
-func (e *Engine) Schedule(event_obj Event) {
+func (e *Engine) Schedule(event_obj data.Event) {
 	// check its model, and time 
-	var new_event Event 
+	var new_event data.Event 
 	new_event = event_obj
 	// new_event.Event_model = event_obj
 	// new_event.Event_type = event_obj.Name
 	exp := model.Expon{}
 	exp.Init(float64(event_obj.Event_model.Lambda))
+	poi := model.Poisson{}
+	poi.Init(float64(event_obj.Event_model.Lambda))
 
 	switch t := strings.ToUpper(event_obj.Event_model.Model); t {
 		case "POISSON":
-			new_event.Event_ts = exp.Rand() // interval is exponential
+			new_event.Event_ts = event_obj.Event_ts + poi.Rand() // interval is exponential
 		case "EXPONENTIAL":
-			new_event.Event_ts = exp.Rand_Var(event_obj.Event_ts)
+			new_event.Event_ts = event_obj.Event_ts + exp.Rand() //exp.Rand_Var(event_obj.Event_ts)
 		default:
 			// error , need to return with an error code
 			// But in here, we just assign an random float number
-			new_event.Event_ts = model.Rand_gen_float()
+			new_event.Event_ts = event_obj.Event_ts + model.Rand_gen_float()
 	}
 
 	// schedule into event queue
@@ -107,7 +102,7 @@ func (e *Engine) Schedule(event_obj Event) {
 // execute all event from given event object array (read & parse from parser.go)
 // Notice: this func must be called after Init()
 func (e *Engine) Start() {
-	var first_event Event
+	var first_event data.Event
 
 	fmt.Println(e.Timeline, e.Doom)
 
@@ -117,12 +112,11 @@ func (e *Engine) Start() {
 		// First pop out the event from event queue
 		first_event = e.Pop_front()
 		// increment timeline
-		e.Timeline += first_event.Event_ts
+		e.Timeline = first_event.Event_ts
 		// Schedule it, and then increase timeline by adding timestamp of this popping out event
 		e.Schedule(first_event)
-
+		fmt.Println("[Event Engine Process] Timeline: ",e.Timeline)
 		// record into history, set Event timestamp sync with e.Timeline
-		first_event.Event_ts = e.Timeline
 		e.History = append(e.History, first_event)
 
 		// Sort the event queue by timestamp (make sure the smallest one came first)

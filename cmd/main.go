@@ -6,6 +6,7 @@ import (
 	"strings"
 	"../internal/parser"
 	"../internal/logger"
+	"../internal/history"
 	"../internal/event/engine"
 )
 
@@ -45,12 +46,19 @@ func main(){
 	// get something useful from source file
 	// create engine & initialize it
 	engine := engine.Engine{}
-	engine.Init(0, 1000, p.Obj)
+	engine.Init(0, 10, p.Obj)
 
 	// start simulation process
 	engine.Start()
 
-	fmt.Println(engine.History)
+	// fmt.Println(engine.History)
+
+	// assign history event list into engine
+	history := history.History{}
+	history.Init(engine.History)
+
+	fmt.Println(history.Map)
+
 	// fmt.Println("Poisson: ",engine.Debug_poisson())
 	// fmt.Println("Exponential: ",engine.Debug_expon())
 }
