@@ -10,6 +10,8 @@ package model
 
 import (
 	"math"
+	"math/rand"
+	"time"
 )
 
 // utils
@@ -20,6 +22,18 @@ func factorial(k float64) float64 {
 	}
 
 	return sum
+}
+
+// 0 ~ upbound
+func Rand_gen_int(upbound int) int {
+	rand.Seed(time.Now().UTC().UnixNano())
+	return rand.Intn(upbound)
+}
+
+// 0.0~1.0
+func Rand_gen_float() float64 {
+	rand.Seed(time.Now().UTC().UnixNano())
+	return rand.Float64()
 }
 
 // ==================================== Poisson ====================================
@@ -38,5 +52,31 @@ func (p *Poisson) Get(k float64) float64{
 
 // ==================================== Exponential ====================================
 type Expon struct {
-	Lambda	int
+	Lambda	float64
+}
+
+func (e *Expon) Init(lambda float64) {
+	e.Lambda = lambda
+}
+
+// Return an value on exponential distribution
+func (e *Expon) Get(k float64) float64 {
+	if k >= 0 {
+		return e.Lambda * math.Exp(-e.Lambda*k)
+	}
+	return 0
+}
+
+// Rand on exponential distribution
+func (e *Expon) Rand() float64{ 
+	return e.Lambda * math.Exp(-e.Lambda*Rand_gen_float())	
+}
+
+// Exponential random variable
+func (e *Expon) Rand_Var(t float64) float64 {
+	if t == float64(0) {
+		// assign a small number as "t"
+		return math.Exp(-e.Lambda*float64(0.0001))
+	}
+	return math.Exp(-e.Lambda*t)
 }

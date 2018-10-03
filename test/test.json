@@ -2,12 +2,12 @@
     { 
         "name": "food_gen", 
         "model": "poisson", 
-        "lambda": 2, 
-        "x": 4 
+        "lambda": 10, 
+        "x": 5
     }, 
     {
         "name": "disaster", 
-        "model": "exponential", 
+        "model": "poisson", 
         "lambda": 2, 
         "x": 4
     }

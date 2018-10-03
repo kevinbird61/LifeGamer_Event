@@ -43,5 +43,14 @@ func main(){
 	}
 
 	// get something useful from source file
-	fmt.Println("Poisson: ",engine.Debug_poisson())
+	// create engine & initialize it
+	engine := engine.Engine{}
+	engine.Init(0, 1000, p.Obj)
+
+	// start simulation process
+	engine.Start()
+
+	fmt.Println(engine.History)
+	// fmt.Println("Poisson: ",engine.Debug_poisson())
+	// fmt.Println("Exponential: ",engine.Debug_expon())
 }
