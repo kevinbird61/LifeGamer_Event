@@ -1,0 +1,1 @@
+powershell -command "go run main.go -itype json -ifile ../test/test.json -doom 10 -debug -runtime"

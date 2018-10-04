@@ -2,11 +2,14 @@ package main
 
 import (
 	"fmt"
+	// "log"
+	"net/http"
 	"flag"
 	"strings"
 	"../internal/parser"
 	"../internal/logger"
 	"../internal/history"
+	"../internal/runtime"
 	"../internal/event/engine"
 )
 
@@ -15,6 +18,8 @@ func main(){
 	itype := flag.String("itype", "json", "Specify type of input file.")
 	ifile := flag.String("ifile", "test.json", "Specify filename of input file.")
 	debug := flag.Bool("debug", false, "Debug flag, default is false.")
+	runtime := flag.Bool("runtime", false, "Runtime server enable/disable, default is disable.")
+	port := flag.Int("port", 9000, "Port number for runtime server.")
 	doom := flag.Float64("doom", 0, "Doom of this simulation.")
 
 	// argparse parsing 
@@ -58,4 +63,39 @@ func main(){
 
 	// Print out total event summation 
 	fmt.Println(history.Map)
+
+	// ================================================= 
+	/* 
+	 * Runtime control 
+	 * - if not specify runtime flag, then event engine will not support runtime controll
+	 * - only support output "history"
+	*/
+	// =================================================
+	if *runtime {
+		// create monitor, aim for peaker program/runtime control 
+		app := monitor.CreateMonitor()
+
+		// Handler 
+		app.Handle(`^/hello$`, func(ctx *monitor.Context){
+			ctx.Text(http.StatusOK, "Hello World")
+		})
+		app.Handle(`/hello/([\w\._-]+)$`, func(ctx *monitor.Context){
+			// TODO: subpath
+			ctx.Text(http.StatusOK, fmt.Sprintf("Hello %s", ctx.Params[0]))
+		})
+
+		fmt.Println("Runtime server starting ...")
+
+		// Running server in the background
+		go func() {
+			http.ListenAndServe(fmt.Sprintf(":%d", *port), app)
+		}()
+	}
+
+	/*
+		Dealing with other things
+	*/
+
+	// need an endless loop to maintain background server 
+	for {}
 }
