@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"flag"
 	"strings"
+	"encoding/json"
 	"../internal/parser"
 	"../internal/logger"
 	"../internal/history"
@@ -75,17 +76,32 @@ func main(){
 		// create monitor, aim for peaker program/runtime control 
 		app := monitor.CreateMonitor()
 
-		// Handler 
-		app.Handle(`^/hello$`, func(ctx *monitor.Context){
-			ctx.Text(http.StatusOK, "Hello World")
+		// Handler
+		/*
+			/health: 	[GET] health check
+			/fetch:		[GET] get the history
+			/insert:	[POST] insert new event into history
+		*/
+		app.Handle(`^/health$`, func(ctx *monitor.Context){
+			// fmt.Println(ctx.Request.Method)
+			ctx.Text(http.StatusOK, "OK")
 		})
-		app.Handle(`/hello/([\w\._-]+)$`, func(ctx *monitor.Context){
-			// TODO: subpath
-			ctx.Text(http.StatusOK, fmt.Sprintf("Hello %s", ctx.Params[0]))
+		app.Handle(`^/fetch$`, func(ctx *monitor.Context){
+			// return all 
+			jsonstr,_ := json.Marshal(history)
+			ctx.Text(http.StatusOK, fmt.Sprintf("%s", string(jsonstr)))
+		})
+		app.Handle(`^/insert`, func(ctx *monitor.Context){
+			// insert new event 
+			if ctx.Request.Method == http.MethodPost {
+				// TODO
+				// schedule new event into history
+			} else {
+				ctx.Text(http.StatusMethodNotAllowed, "Please using POST method")
+			}
 		})
 
 		fmt.Println("Runtime server starting ...")
-
 		// Running server in the background
 		go func() {
 			http.ListenAndServe(fmt.Sprintf(":%d", *port), app)
