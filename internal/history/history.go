@@ -37,6 +37,10 @@ func (h *History) Init(tstart, tend float64, event_list []data.Event) {
 func (h *History) Add_event_list(event_list []data.Event) {
 	// append 
 	h.Sim = append(h.Sim, event_list...)
+	// re-count
+	for _,obj := range event_list {
+		h.Map[obj.Event_type]++
+	}
 	// sort 
 	sort.Sort(data.SortEvent(h.Sim))
 }
