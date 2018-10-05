@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	// "log"
 	"net/http"
 	//"io/ioutil"
@@ -90,9 +91,35 @@ func main(){
 			ctx.Text(http.StatusOK, "text/plain", "OK")
 		})
 		app.Handle(`^/fetch$`, func(ctx *monitor.Context){
-			// return all 
-			jsonstr,_ := json.Marshal(history)
+			jsonstr,_ := json.Marshal(history.Sim)
 			ctx.Text(http.StatusOK, "text/plain", fmt.Sprintf("%s", string(jsonstr)))
+		})
+		app.Handle(`/fetch/([\w\._-]+)$`, func(ctx *monitor.Context){
+			// fmt.Println(history.Sim)
+			switch str := strings.ToUpper(ctx.Params[0]); str {
+				case "TIME":
+					// FIXME: 
+					// using "<timestamp> <obj_array>" as messenge output
+					// need to format into json or other easily use format
+					var result []string
+					sortedKey := make([]float64, 0, len(history.Story))
+					for ts,_ := range history.Story {
+						// fmt.Println("%v : %s", ts, obj_arr)
+						sortedKey = append(sortedKey, ts)
+					}
+					sort.Float64s(sortedKey)
+					for index := range sortedKey {
+						fmt.Println(sortedKey[index], history.Story[sortedKey[index]])
+						result = append(result, fmt.Sprintf("%f, %s", sortedKey[index] , history.Story[sortedKey[index]]))
+						// result += fmt.Sprintf("%d %s\n", sortedKey[index], history.Story[sortedKey[index]])
+					}
+					var result_str string 
+					result_str = strings.Join(result, "\n")
+					ctx.Text(http.StatusOK, "text/plain", fmt.Sprintf("%s", result_str))
+				default:
+					ctx.Text(404, "text/plain", "Error pathname.")
+			}
+			
 		})
 		app.Handle(`^/insert`, func(ctx *monitor.Context){
 			ctx.Request.ParseForm()

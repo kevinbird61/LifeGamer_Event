@@ -15,6 +15,12 @@ type Event struct {
 	Event_ts	float64		// timestamp of event
 }
 
+// story slot 
+type Slot struct {
+	Event	[]Event 
+	Ts 		float64
+}
+
 /*
 	sorting, need 3 interface  
 	- Len

@@ -15,6 +15,7 @@ type History struct {
 	Sim		[]data.Event 		// Simulation (event list) of History, the game will base on this event list to compute
 	Tstart	float64				// start time
 	Tend	float64				// end time
+	Story	map[float64][]data.Event 		// Story mode - using timestamp as index, to describe events
 }
 
 // Count the event number 
@@ -25,8 +26,12 @@ func (h *History) Init(tstart, tend float64, event_list []data.Event) {
 
 	// count
 	h.Map = make(map[string]int)
+	h.Story = make(map[float64][]data.Event)
 	for _,obj := range event_list {
+		// type as index
 		h.Map[obj.Event_type]++
+		// timestamp as index
+		h.Story[obj.Event_ts] = append(h.Story[obj.Event_ts], obj)
 	}
 
 	// record history
